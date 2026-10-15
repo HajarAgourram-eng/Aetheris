@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  fastapi-engine:
+    build:
+      context: ./services/fastapi-engine
+      dockerfile: Dockerfile
+    container_name: aetheris-fastapi-engine
+    ports:
+      - "8000:8000"
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ebpf-core:
+    build:
+      context: ./services/ebpf-core
+      dockerfile: Dockerfile
+    container_name: aetheris-ebpf-core
+    depends_on:
+      - fastapi-engine
+    restart: always
